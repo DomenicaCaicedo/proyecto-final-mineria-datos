@@ -2,10 +2,18 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# ==========================
+# CARGA DE DATOS
+# ==========================
+
 df = pd.read_csv(
     "Sample - Superstore.csv",
     encoding="latin1"
 )
+
+# ==========================
+# FILTRO POR REGIÓN
+# ==========================
 
 region = st.sidebar.selectbox(
     "Seleccione una región",
@@ -15,23 +23,59 @@ region = st.sidebar.selectbox(
 if region != "Todas":
     df = df[df["Region"] == region]
 
-st.title("Dashboard Ejecutivo")
+# ==========================
+# TÍTULO
+# ==========================
 
-st.metric("Total Ventas", round(df['Sales'].sum(),2))
-st.metric("Clientes", df['Customer ID'].nunique())
-st.metric("Promedio Venta", round(df['Sales'].mean(),2))
+st.title("Dashboard Ejecutivo de Ventas")
 
-producto_top = df.groupby('Product Name')['Sales'].sum().idxmax()
+# ==========================
+# KPIs
+# ==========================
 
-st.metric("Producto más vendido", producto_top)
+st.metric(
+    "Total Ventas",
+    f"${df['Sales'].sum():,.2f}"
+)
 
+st.metric(
+    "Total Clientes",
+    df['Customer ID'].nunique()
+)
+
+st.metric(
+    "Promedio de Venta",
+    f"${df['Sales'].mean():,.2f}"
+)
+
+st.metric(
+    "Total Registros",
+    len(df)
+)
+
+producto_top = (
+    df.groupby('Product Name')['Sales']
+      .sum()
+      .idxmax()
+)
+
+st.metric(
+    "Producto más vendido",
+    producto_top
+)
+
+# ==========================
+# VENTAS POR REGIÓN
+# ==========================
 
 ventas_region = df.groupby('Region')['Sales'].sum()
-
 
 st.subheader("Ventas por Región")
 st.bar_chart(ventas_region)
-ventas_region = df.groupby('Region')['Sales'].sum()
+
+# ==========================
+# GRÁFICO CIRCULAR
+# ==========================
 
 st.subheader("Participación de Ventas por Región (%)")
 
@@ -43,12 +87,31 @@ df.groupby('Region')['Sales'].sum().plot(
     ax=ax
 )
 
+ax.set_ylabel("")
+
 st.pyplot(fig)
+
+# ==========================
+# VENTAS POR CATEGORÍA
+# ==========================
 
 ventas_categoria = df.groupby('Category')['Sales'].sum()
 
 st.subheader("Ventas por Categoría")
 st.bar_chart(ventas_categoria)
+
+# ==========================
+# RENTABILIDAD POR CATEGORÍA
+# ==========================
+
+rentabilidad = df.groupby('Category')['Profit'].sum()
+
+st.subheader("Rentabilidad por Categoría")
+st.bar_chart(rentabilidad)
+
+# ==========================
+# TENDENCIA TEMPORAL
+# ==========================
 
 df['Order Date'] = pd.to_datetime(df['Order Date'])
 
