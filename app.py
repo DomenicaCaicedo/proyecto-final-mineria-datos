@@ -21,6 +21,11 @@ st.metric("Total Ventas", round(df['Sales'].sum(),2))
 st.metric("Clientes", df['Customer ID'].nunique())
 st.metric("Promedio Venta", round(df['Sales'].mean(),2))
 
+producto_top = df.groupby('Product Name')['Sales'].sum().idxmax()
+
+st.metric("Producto más vendido", producto_top)
+
+
 ventas_region = df.groupby('Region')['Sales'].sum()
 
 
@@ -39,10 +44,6 @@ df.groupby('Region')['Sales'].sum().plot(
 )
 
 st.pyplot(fig)
-
-producto_top = df.groupby('Product Name')['Sales'].sum().idxmax()
-
-st.metric("Producto más vendido", producto_top)
 
 ventas_categoria = df.groupby('Category')['Sales'].sum()
 
