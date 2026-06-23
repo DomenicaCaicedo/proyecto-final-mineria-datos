@@ -27,9 +27,6 @@ st.subheader("Ventas por Región")
 st.bar_chart(ventas_region)
 ventas_region = df.groupby('Region')['Sales'].sum()
 
-st.subheader("Ventas por Región")
-st.bar_chart(ventas_region)
-
 st.subheader("Participación de Ventas por Región (%)")
 
 fig, ax = plt.subplots()
