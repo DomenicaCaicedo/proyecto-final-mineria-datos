@@ -2,27 +2,21 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# ==================================
-# CONFIGURACIÓN DE LA PÁGINA
-# ==================================
+# Configuracion de la pagina
 
 st.set_page_config(
-    page_title="Dashboard Ejecutivo",
+    page_title="Dashboard Grupo 8",
     layout="wide"
 )
 
-# ==================================
-# CARGA DE DATOS
-# ==================================
+# Carga de datos
 
 df = pd.read_csv(
     "Sample - Superstore.csv",
     encoding="latin1"
 )
 
-# ==================================
-# FILTRO
-# ==================================
+# Filtro
 
 st.sidebar.title("Filtros")
 
@@ -34,18 +28,14 @@ region = st.sidebar.selectbox(
 if region != "Todas":
     df = df[df["Region"] == region]
 
-# ==================================
-# TÍTULO
-# ==================================
+# Titulo
 
 st.title("Dashboard Ejecutivo de Ventas")
 st.markdown("### Análisis Empresarial mediante Minería de Datos")
 
 st.markdown("---")
 
-# ==================================
 # KPIs
-# ==================================
 
 producto_top = (
     df.groupby('Product Name')['Sales']
@@ -85,9 +75,7 @@ st.success(producto_top)
 
 st.markdown("---")
 
-# ==================================
-# VENTAS POR REGIÓN
-# ==================================
+# Ventas por region
 
 ventas_region = df.groupby('Region')['Sales'].sum()
 
@@ -106,9 +94,7 @@ ax.set_xlabel("Región")
 
 st.pyplot(fig)
 
-# ==================================
-# PARTICIPACIÓN POR REGIÓN
-# ==================================
+# Participacion por region
 
 st.subheader("Participación de Ventas por Región")
 
@@ -125,9 +111,7 @@ ax.set_ylabel("")
 
 st.pyplot(fig)
 
-# ==================================
-# VENTAS POR CATEGORÍA
-# ==================================
+# Ventas por categoria
 
 ventas_categoria = df.groupby('Category')['Sales'].sum()
 
@@ -146,9 +130,7 @@ ax.set_xlabel("Categoría")
 
 st.pyplot(fig)
 
-# ==================================
-# RENTABILIDAD
-# ==================================
+# Rentabilidad por categoria
 
 rentabilidad = df.groupby('Category')['Profit'].sum()
 
@@ -167,9 +149,7 @@ ax.set_xlabel("Categoría")
 
 st.pyplot(fig)
 
-# ==================================
-# TENDENCIA TEMPORAL
-# ==================================
+# Tendencia de ventas
 
 df['Order Date'] = pd.to_datetime(df['Order Date'])
 
@@ -178,17 +158,3 @@ ventas_tiempo = df.groupby('Order Date')['Sales'].sum()
 st.subheader("Tendencia de Ventas")
 
 st.line_chart(ventas_tiempo)
-
-# ==================================
-# HALLAZGOS
-# ==================================
-
-st.markdown("---")
-
-st.subheader("Hallazgo Principal")
-
-st.info(
-    f"La región con mayores ventas es "
-    f"'{ventas_region.idxmax()}' y el producto más vendido es "
-    f"'{producto_top}'."
-)
