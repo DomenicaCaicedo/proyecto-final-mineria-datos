@@ -30,7 +30,7 @@ if region != "Todas":
 
 # Titulo
 
-st.title("Dashboard Ejecutivo de Ventas")
+st.title("Dashboard Grupo 8")
 st.markdown("### Análisis Empresarial mediante Minería de Datos")
 
 st.markdown("---")
