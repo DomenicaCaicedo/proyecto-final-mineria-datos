@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 df = pd.read_csv(
-    r"C:\Users\domen\Downloads\Proyecto\Sample - Superstore.csv",
+    "Sample - Superstore.csv",
     encoding="latin1"
 )
 
