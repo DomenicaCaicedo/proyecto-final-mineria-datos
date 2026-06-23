@@ -23,9 +23,21 @@ st.metric("Promedio Venta", round(df['Sales'].mean(),2))
 
 ventas_region = df.groupby('Region')['Sales'].sum()
 
-st.subheader("Ventas por Región")
-st.bar_chart(ventas_region)
-ventas_region = df.groupby('Region')['Sales'].sum()
+st.subheader("Ventas por Categoría")
+
+fig, ax = plt.subplots(figsize=(8,4))
+
+ventas_categoria.plot(
+    kind='bar',
+    color='purple',  # cambia por el color que quieras
+    ax=ax
+)
+
+st.pyplot(fig)
+
+#st.subheader("Ventas por Región")
+#st.bar_chart(ventas_region)
+#ventas_region = df.groupby('Region')#['Sales'].sum()
 
 st.subheader("Participación de Ventas por Región (%)")
 
