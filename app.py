@@ -207,23 +207,3 @@ ventas_tiempo = df.groupby("Order Date")["Sales"].sum()
 st.subheader("Tendencia de Ventas")
 
 st.line_chart(ventas_tiempo)
-
-# ============================================
-# HALLAZGO PRINCIPAL
-# ============================================
-
-st.markdown("---")
-
-st.subheader("Hallazgos")
-
-st.info(
-    f"""
-**Región con mayores ventas:** {ventas_region.idxmax()}
-
-**Producto más vendido:** {producto_top}
-
-**Mejor cliente:** {cliente_top}
-
-**Ventas totales del mejor cliente:** ${ventas_cliente_top:,.2f}
-"""
-)
