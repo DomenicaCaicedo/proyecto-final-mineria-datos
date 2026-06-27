@@ -2,21 +2,28 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Configuracion de la pagina
+# ============================================
+# CONFIGURACIÓN DE LA PÁGINA
+# ============================================
 
 st.set_page_config(
     page_title="Dashboard Grupo 8",
+    page_icon="📊",
     layout="wide"
 )
 
-# Carga de datos
+# ============================================
+# CARGA DE DATOS
+# ============================================
 
 df = pd.read_csv(
     "Sample - Superstore.csv",
     encoding="latin1"
 )
 
-# Filtro
+# ============================================
+# FILTRO
+# ============================================
 
 st.sidebar.title("Filtros")
 
@@ -28,19 +35,35 @@ region = st.sidebar.selectbox(
 if region != "Todas":
     df = df[df["Region"] == region]
 
-# Titulo
+# ============================================
+# TÍTULO
+# ============================================
 
-st.title("Dashboard Grupo 8")
-st.markdown("### Análisis Empresarial mediante Minería de Datos")
+st.title("Dashboard Ejecutivo - Grupo 8")
+st.markdown("Análisis Empresarial mediante Minería de Datos")
 
 st.markdown("---")
 
+# ============================================
 # KPIs
+# ============================================
 
 producto_top = (
-    df.groupby('Product Name')['Sales']
+    df.groupby("Product Name")["Sales"]
       .sum()
       .idxmax()
+)
+
+cliente_top = (
+    df.groupby("Customer Name")["Sales"]
+      .sum()
+      .idxmax()
+)
+
+ventas_cliente_top = (
+    df.groupby("Customer Name")["Sales"]
+      .sum()
+      .max()
 )
 
 col1, col2, col3, col4 = st.columns(4)
@@ -54,7 +77,7 @@ with col1:
 with col2:
     st.metric(
         "Clientes",
-        df['Customer ID'].nunique()
+        df["Customer ID"].nunique()
     )
 
 with col3:
@@ -65,23 +88,35 @@ with col3:
 
 with col4:
     st.metric(
-        "Registros",
-        len(df)
+        "Mejor Cliente",
+        cliente_top
     )
 
-st.markdown("Producto más vendido")
+# ============================================
+# PRODUCTO MÁS VENDIDO
+# ============================================
 
-st.success(producto_top)
+colA, colB = st.columns(2)
+
+with colA:
+    st.markdown("Producto más vendido")
+    st.success(producto_top)
+
+with colB:
+    st.markdown("Compras del mejor cliente")
+    st.success(f"${ventas_cliente_top:,.2f}")
 
 st.markdown("---")
 
-# Ventas por region
+# ============================================
+# VENTAS POR REGIÓN
+# ============================================
 
-ventas_region = df.groupby('Region')['Sales'].sum()
+ventas_region = df.groupby("Region")["Sales"].sum()
 
 st.subheader("Ventas por Región")
 
-fig, ax = plt.subplots(figsize=(8, 4))
+fig, ax = plt.subplots(figsize=(8,4))
 
 ventas_region.plot(
     kind="bar",
@@ -92,17 +127,21 @@ ventas_region.plot(
 ax.set_ylabel("Ventas")
 ax.set_xlabel("Región")
 
+plt.xticks(rotation=0)
+
 st.pyplot(fig)
 
-# Participacion por region
+# ============================================
+# PARTICIPACIÓN POR REGIÓN
+# ============================================
 
 st.subheader("Participación de Ventas por Región")
 
-fig, ax = plt.subplots(figsize=(6, 6))
+fig, ax = plt.subplots(figsize=(6,6))
 
-df.groupby('Region')['Sales'].sum().plot(
-    kind='pie',
-    autopct='%1.1f%%',
+df.groupby("Region")["Sales"].sum().plot(
+    kind="pie",
+    autopct="%1.1f%%",
     startangle=90,
     ax=ax
 )
@@ -111,13 +150,15 @@ ax.set_ylabel("")
 
 st.pyplot(fig)
 
-# Ventas por categoria
+# ============================================
+# VENTAS POR CATEGORÍA
+# ============================================
 
-ventas_categoria = df.groupby('Category')['Sales'].sum()
+ventas_categoria = df.groupby("Category")["Sales"].sum()
 
 st.subheader("Ventas por Categoría")
 
-fig, ax = plt.subplots(figsize=(8, 4))
+fig, ax = plt.subplots(figsize=(8,4))
 
 ventas_categoria.plot(
     kind="bar",
@@ -128,33 +169,61 @@ ventas_categoria.plot(
 ax.set_ylabel("Ventas")
 ax.set_xlabel("Categoría")
 
+plt.xticks(rotation=0)
+
 st.pyplot(fig)
 
-# Rentabilidad por categoria
+# ============================================
+# RENTABILIDAD POR CATEGORÍA
+# ============================================
 
-rentabilidad = df.groupby('Category')['Profit'].sum()
+rentabilidad = df.groupby("Category")["Profit"].sum()
 
 st.subheader("Rentabilidad por Categoría")
 
-fig, ax = plt.subplots(figsize=(8, 4))
+fig, ax = plt.subplots(figsize=(8,4))
 
 rentabilidad.plot(
     kind="bar",
-    color="#FF8042",
+    color="#FF8C42",
     ax=ax
 )
 
 ax.set_ylabel("Ganancia")
 ax.set_xlabel("Categoría")
 
+plt.xticks(rotation=0)
+
 st.pyplot(fig)
 
-# Tendencia de ventas
+# ============================================
+# TENDENCIA DE VENTAS
+# ============================================
 
-df['Order Date'] = pd.to_datetime(df['Order Date'])
+df["Order Date"] = pd.to_datetime(df["Order Date"])
 
-ventas_tiempo = df.groupby('Order Date')['Sales'].sum()
+ventas_tiempo = df.groupby("Order Date")["Sales"].sum()
 
 st.subheader("Tendencia de Ventas")
 
 st.line_chart(ventas_tiempo)
+
+# ============================================
+# HALLAZGO PRINCIPAL
+# ============================================
+
+st.markdown("---")
+
+st.subheader("Hallazgos")
+
+st.info(
+    f"""
+**Región con mayores ventas:** {ventas_region.idxmax()}
+
+**Producto más vendido:** {producto_top}
+
+**Mejor cliente:** {cliente_top}
+
+**Ventas totales del mejor cliente:** ${ventas_cliente_top:,.2f}
+"""
+)
